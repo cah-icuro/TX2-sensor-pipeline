@@ -1,6 +1,10 @@
 # Software Pipeline for Jetson TX2
 
+
 ### Section: Camera
+
+
+#### GStreamer
 
 We can run a preliminary test to see if we can get data from the camera via gstreamer:
 
@@ -9,6 +13,9 @@ gst-launch-1.0 nvcamerasrc ! 'video/x-raw(memory:NVMM), width=640, height=480, f
 ```
 
 Sometimes the camera resource may be locked, (giving an error that the camera failed to pause), in which case we can simply reboot the TX2.  If we change external cameras later on, we may need to adjust the gstreamer pipeline.
+
+
+#### Publish to ROS Topic
 
 The first step is to send the camera data from the external camera to a ROS node.  This is accomplished through the [gscam package] (http://wiki.ros.org/gscam).  Assuming we already have `roscore` running in another terminal, we run gscam in a new terminal as follows:
 
@@ -22,6 +29,9 @@ rosrun gscam gscam
 ```
 
 Now we can verify that the data is being published with RViz (run `rviz &` from any terminal), and click Add -> By topic -> /camera/image_raw -> Image (nb: Image not Camera, because we are recieving an "Image" data type, "Camera" may be the camera metadata type or somethinge else).  We should now see the live camera feed in the bottom left corner of the RViz window.
+
+
+#### Work with published image in OpenCV
 
 Next, if we want to connect this topic to any image processing software that uses OpenCV to read images, we can use [cv_bridge] (http://wiki.ros.org/cv_bridge/Tutorials/)
 
