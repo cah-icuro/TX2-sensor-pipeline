@@ -8,17 +8,35 @@ We can run a preliminary test to see if we can get data from the camera via gstr
 gst-launch-1.0 nvcamerasrc ! 'video/x-raw(memory:NVMM), width=640, height=480, framerate=30/1, format=NV12' ! nvvidconv ! nvegltransform ! nveglglessink
 ```
 
-If we get some sort of resource lock error, rebooting the TX2 should fix the issue.  If we change external cameras, we may need to adjust the gstreamer pipeline.
+Sometimes the camera resource may be locked, (giving an error that the camera failed to pause), in which case we can simply reboot the TX2.  If we change external cameras later on, we may need to adjust the gstreamer pipeline.
 
-Once the basic gstreamer functionality works, the first step is to send the camera data from the external camera to a ROS node.  This is accomplished through the gscam package (http://wiki.ros.org/gscam).  Remember to always do `source devel/setup.bash` when trying to use ROS in a new terminal.  After installing the package, we need to set the GSCAM_CONFIG variable and then launch the package:
+The first step is to send the camera data from the external camera to a ROS node.  This is accomplished through the [gscam package] (http://wiki.ros.org/gscam).  Assuming we already have `roscore` running in another terminal, we run gscam in a new terminal as follows:
 
 ```bash
+cd catkin_workspace
+source devel/setup.bash
 roscd gscam
 cd bin # Make this directory if it doesn't exist
 export GSCAM_CONFIG="nvcamerasrc ! video/x-raw(memory:NVMM),width=1280, height=720,format=I420, framerate=30/1 ! nvvidconv ! video/x-raw, format=BGRx ! videoconvert ! ffmpegcolorspace"
 rosrun gscam gscam
 ```
 
-In order to verify that this is publishing correctly, we run `rviz &` from the command line, and click Add -> By topic -> /camera/image_raw -> Image (nb: not Camera, because we are recieving an "Image" data type).
+Now we can verify that the data is being published with RViz (run `rviz &` from any terminal), and click Add -> By topic -> /camera/image_raw -> Image (nb: Image not Camera, because we are recieving an "Image" data type, "Camera" may be the camera metadata type or somethinge else).  We should now see the live camera feed in the bottom left corner of the RViz window.
 
-We should now see the live camera feed in the bottom left corner of the RViz window.
+Next, if we want to connect this topic to any image processing software that uses OpenCV to read images, we can use [cv_bridge] (http://wiki.ros.org/cv_bridge/Tutorials/UsingCvBridgeToConvertBetweenROSImagesAndOpenCVImages)
+
+*Todo: cv_bridge*
+
+#### Image Processing and Inference
+
+I have tested [DeepTextSpotter] (https://github.com/MichalBusta/DeepTextSpotter) with various sample images, to some degree of success.  Setup required building OpenCV a la [JetsonHacks Script] (https://github.com/jetsonhacks/buildOpenCVTX2) and a careful installation of caffe.  In a python terminal, we should be able to run the following without any errors:
+
+```python
+import numpy
+import cv2
+import caffe
+print(cv2.__version__)
+```
+This should show an OpenCV version of 3.x.
+
+Given that the above is working, we should be ready to build DeepTextSpotter.  I ran a modified version of the demo script which takes an image file as input.  That plan is to connect this to the ROS topic which is publishing the camera feed using cv_bridge.  Then DeepTextSpotter will search the image for areas that contain text and attempt to read them.  It reads on a character-by-character basis, so it often gets a letter or two wrong (if we were looking for certain words, we could use a string distance metric to compare the output to the target).  It can also read numbers, but that seems to be more difficult and more difficult to error correct (much less redundancy in numbers, though perhaps we could assume e.g. speed limits are a multiple of 5).
