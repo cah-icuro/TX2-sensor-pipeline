@@ -1,6 +1,6 @@
-#Software Pipeline for Jetson TX2
+# Software Pipeline for Jetson TX2
 
-###Section: Camera
+### Section: Camera
 
 We can run a preliminary test to see if we can get data from the camera via gstreamer:
 
@@ -19,6 +19,6 @@ export GSCAM_CONFIG="nvcamerasrc ! video/x-raw(memory:NVMM),width=1280, height=7
 rosrun gscam gscam
 ```
 
-In order to verify that this is publishing correctly, we run `rviz &` from the command line, and click Add -> By topic -> /camera/image_raw -> Image (nb: not Camera, because we are recieving an "Image" data type)
+In order to verify that this is publishing correctly, we run `rviz &` from the command line, and click Add -> By topic -> /camera/image_raw -> Image (nb: not Camera, because we are recieving an "Image" data type).
 
 We should now see the live camera feed in the bottom left corner of the RViz window.
