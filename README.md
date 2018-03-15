@@ -1,9 +1,11 @@
 # Software Pipeline for Jetson TX2
 
+---
 
+<br/>
 ### Section: Camera
 
-
+<br/>
 #### GStreamer
 
 We can run a preliminary test to see if we can get data from the camera via gstreamer:
@@ -17,7 +19,7 @@ Sometimes the camera resource may be locked, (giving an error that the camera fa
 
 #### Publish to ROS Topic
 
-The first step is to send the camera data from the external camera to a ROS node.  This is accomplished through the [gscam package] (http://wiki.ros.org/gscam).  Assuming we already have `roscore` running in another terminal, we run gscam in a new terminal as follows:
+The first step is to send the camera data from the external camera to a ROS node.  This is accomplished through the [gscam package](http://wiki.ros.org/gscam).  Assuming we already have `roscore` running in another terminal, we run gscam in a new terminal as follows:
 
 ```bash
 cd catkin_workspace
@@ -33,9 +35,9 @@ Now we can verify that the data is being published with RViz (run `rviz &` from 
 
 #### Work with published image in OpenCV
 
-Next, if we want to connect this topic to any image processing software that uses OpenCV to read images, we can use [cv_bridge] (http://wiki.ros.org/cv_bridge/Tutorials/)
+Next, if we want to connect this topic to any image processing software that uses OpenCV to read images, we can use [cv_bridge](http://wiki.ros.org/cv_bridge/Tutorials/)
 
-To setup a python subscriber to the ROS node we created above, we follow the [cv_bridge python tutorial] (http://wiki.ros.org/cv_bridge/Tutorials/ConvertingBetweenROSImagesAndOpenCVImagesPython) with a couple of modifications.
+To setup a python subscriber to the ROS node we created above, we follow the [cv_bridge python tutorial](http://wiki.ros.org/cv_bridge/Tutorials/ConvertingBetweenROSImagesAndOpenCVImagesPython) with a couple of modifications.
 
 To create the package, we use `catkin_create_pkg <package_name> [depend1] [depend2] [depend3]` instead of `roscreate-pkg`.  After running this, we need to edit `CMakeLists.txt` so that the `find_package` line looks like (changed `opencv2` to `OpenCV`):
 ```
@@ -64,7 +66,7 @@ rosrun imgpass listener.py
 
 #### Image Processing and Inference
 
-I have tested [DeepTextSpotter] (https://github.com/MichalBusta/DeepTextSpotter) with various sample images, to some degree of success.  Setup required building OpenCV a la [JetsonHacks Script] (https://github.com/jetsonhacks/buildOpenCVTX2) and a careful installation of caffe.  In a python terminal, we should be able to run the following without any errors:
+I have tested [DeepTextSpotter](https://github.com/MichalBusta/DeepTextSpotter) with various sample images, to some degree of success.  Setup required building OpenCV a la [JetsonHacks Script](https://github.com/jetsonhacks/buildOpenCVTX2) and a careful installation of caffe.  In a python terminal, we should be able to run the following without any errors:
 
 ```python
 import numpy
