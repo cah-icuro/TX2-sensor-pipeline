@@ -23,9 +23,34 @@ rosrun gscam gscam
 
 Now we can verify that the data is being published with RViz (run `rviz &` from any terminal), and click Add -> By topic -> /camera/image_raw -> Image (nb: Image not Camera, because we are recieving an "Image" data type, "Camera" may be the camera metadata type or somethinge else).  We should now see the live camera feed in the bottom left corner of the RViz window.
 
-Next, if we want to connect this topic to any image processing software that uses OpenCV to read images, we can use [cv_bridge] (http://wiki.ros.org/cv_bridge/Tutorials/UsingCvBridgeToConvertBetweenROSImagesAndOpenCVImages)
+Next, if we want to connect this topic to any image processing software that uses OpenCV to read images, we can use [cv_bridge] (http://wiki.ros.org/cv_bridge/Tutorials/)
 
-*Todo: cv_bridge*
+To setup a python subscriber to the ROS node we created above, we follow the [cv_bridge python tutorial] (http://wiki.ros.org/cv_bridge/Tutorials/ConvertingBetweenROSImagesAndOpenCVImagesPython) with a couple of modifications.
+
+To create the package, we use `catkin_create_pkg <package_name> [depend1] [depend2] [depend3]` instead of `roscreate-pkg`.  After running this, we need to edit `CMakeLists.txt` so that the `find_package` line looks like (changed `opencv2` to `OpenCV`):
+```
+find_package(catkin REQUIRED COMPONENTS
+  cv_bridge
+  rospy
+  OpenCV
+  sensor_msgs
+  std_msgs
+)
+```
+
+Finally, inside the python source we make two changes. First, adjust the `roslib.load_manifest('package')` line to contain our package name, e.g. `roslib.load_manifest('imgpass')`.  Second, update the `self.image_sub` declaration in `__init__` to
+```
+self.image_sub = rospy.Subscriber("/camera/image_raw",Image,self.callback)
+```
+
+Now we can build and run the python script, e.g. if our package was named `imgpass` and our python source was named `listener.py`, we run at the terminal (after sourcing `/devel/setup.bash`):
+```bash
+roscd imgpass
+mkdir -p build
+cd build
+cmake ..
+rosrun imgpass listener.py
+```
 
 #### Image Processing and Inference
 
