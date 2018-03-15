@@ -3,9 +3,11 @@
 ---
 
 <br/>
+
 ### Section: Camera
 
 <br/>
+
 #### GStreamer
 
 We can run a preliminary test to see if we can get data from the camera via gstreamer:
@@ -16,6 +18,7 @@ gst-launch-1.0 nvcamerasrc ! 'video/x-raw(memory:NVMM), width=640, height=480, f
 
 Sometimes the camera resource may be locked, (giving an error that the camera failed to pause), in which case we can simply reboot the TX2.  If we change external cameras later on, we may need to adjust the gstreamer pipeline.
 
+<br/>
 
 #### Publish to ROS Topic
 
@@ -32,10 +35,11 @@ rosrun gscam gscam
 
 Now we can verify that the data is being published with RViz (run `rviz &` from any terminal), and click Add -> By topic -> /camera/image_raw -> Image (nb: Image not Camera, because we are recieving an "Image" data type, "Camera" may be the camera metadata type or somethinge else).  We should now see the live camera feed in the bottom left corner of the RViz window.
 
+<br/>
 
 #### Work with published image in OpenCV
 
-Next, if we want to connect this topic to any image processing software that uses OpenCV to read images, we can use [cv_bridge](http://wiki.ros.org/cv_bridge/Tutorials/)
+Next, if we want to connect this topic to any image processing software that uses OpenCV to read images, we can use [cv_bridge](http://wiki.ros.org/cv_bridge/Tutorials/).
 
 To setup a python subscriber to the ROS node we created above, we follow the [cv_bridge python tutorial](http://wiki.ros.org/cv_bridge/Tutorials/ConvertingBetweenROSImagesAndOpenCVImagesPython) with a couple of modifications.
 
@@ -64,9 +68,11 @@ cmake ..
 rosrun imgpass listener.py
 ```
 
+<br/>
+
 #### Image Processing and Inference
 
-I have tested [DeepTextSpotter](https://github.com/MichalBusta/DeepTextSpotter) with various sample images, to some degree of success.  Setup required building OpenCV a la [JetsonHacks Script](https://github.com/jetsonhacks/buildOpenCVTX2) and a careful installation of caffe.  In a python terminal, we should be able to run the following without any errors:
+I have tested [DeepTextSpotter](https://github.com/MichalBusta/DeepTextSpotter) with various sample images, to some degree of success.  Setup required building OpenCV a la [JetsonHacks script](https://github.com/jetsonhacks/buildOpenCVTX2) and a careful installation of caffe.  In a python terminal, we should be able to run the following without any errors:
 
 ```python
 import numpy
