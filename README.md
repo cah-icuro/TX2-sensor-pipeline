@@ -84,6 +84,40 @@ cmake ..
 rosrun imgpass listener.py
 ```
 
+If we get the CMake warning about OpenCV:
+
+```
+  Could not find a package configuration file provided by "OpenCV" with any
+  of the following names:
+
+    OpenCVConfig.cmake
+    opencv-config.cmake
+
+  Add the installation prefix of "OpenCV" to CMAKE_PREFIX_PATH or set
+  "OpenCV_DIR" to a directory containing one of the above files.  If "OpenCV"
+  provides a separate development package or SDK, be sure it has been
+  installed.
+```
+The solution is to first find this `OpenCVConfig.cmake` file by running:
+
+```bash
+sudo find / -name OpenCVConfig.cmake
+```
+
+This should give something like:
+```
+/usr/share/OpenCV/OpenCVConfig.cmake
+/usr/local/share/OpenCV/OpenCVConfig.cmake
+```
+
+Supposing we got the first one above, we would add to `CMakeLists.txt` the following (*before* the find_package line):
+```
+set(OpenCV_DIR /usr/share/OpenCV)
+```
+
+
+
+
 <br/>
 
 #### Image Processing and Inference
