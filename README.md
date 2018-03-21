@@ -22,7 +22,19 @@ Sometimes the camera resource may be locked, (giving an error that the camera fa
 
 #### Publish to ROS Topic
 
-The first step is to send the camera data from the external camera to a ROS node.  This is accomplished through the [gscam package](http://wiki.ros.org/gscam).  Assuming we already have `roscore` running in another terminal, we run gscam in a new terminal as follows:
+The first step is to send the camera data from the external camera to a ROS node.  This is accomplished through the [gscam package](http://wiki.ros.org/gscam).  Install this package from the [Github source](https://github.com/ros-drivers/gscam) by doing:
+
+```bash
+cd catkin_workspace
+cd src
+git clone https://github.com/ros-drivers/gscam
+cd ..
+catkin_make
+```
+
+We should see the package `gscam` mentioned in the build output.  Now we are ready to launch gscam.
+
+Assuming we already have `roscore` running in another terminal, we run gscam in a new terminal as follows:
 
 ```bash
 cd catkin_workspace
