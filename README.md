@@ -51,7 +51,11 @@ Now we can verify that the data is being published with RViz (run `rviz &` from 
 
 #### Work with published image in OpenCV
 
-Next, if we want to connect this topic to any image processing software that uses OpenCV to read images, we can use [cv_bridge](http://wiki.ros.org/cv_bridge/Tutorials/).
+Next, if we want to connect this topic to any image processing software that uses OpenCV to read images, we can use [cv_bridge](http://wiki.ros.org/cv_bridge/Tutorials/).  To install,
+
+```bash
+sudo apt-get install ros-kinetic-cv-bridge
+```
 
 To setup a python subscriber to the ROS node we created above, we follow the [cv_bridge python tutorial](http://wiki.ros.org/cv_bridge/Tutorials/ConvertingBetweenROSImagesAndOpenCVImagesPython) with a couple of modifications.
 
