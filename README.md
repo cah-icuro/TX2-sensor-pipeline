@@ -4,6 +4,17 @@
 
 <br/>
 
+### Architecture
+
+Jetson TX2 architecture codes for compiling with CUDA ((source)[http://arnon.dk/matching-sm-architectures-arch-and-gencode-for-various-nvidia-cards/]):
+```
+CUDA 8 and later:
+SM62 or SM_62, compute_62 – Drive-PX2, Tegra (Jetson) TX2, Denver-based GPU
+```
+
+
+<br/>
+
 ### Section: Camera
 
 <br/>
@@ -133,3 +144,31 @@ print(cv2.__version__)
 This should show an OpenCV version of 3.x.
 
 Given that the above is working, we should be ready to build DeepTextSpotter.  I ran a modified version of the demo script which takes an image file as input.  That plan is to connect this to the ROS topic which is publishing the camera feed using cv_bridge.  Then DeepTextSpotter will search the image for areas that contain text and attempt to read them.  It reads on a character-by-character basis, so it often gets a letter or two wrong (if we were looking for certain words, we could use a string distance metric to compare the output to the target).  It can also read numbers, but that seems to be more difficult and more difficult to error correct (much less redundancy in numbers, though perhaps we could assume e.g. speed limits are a multiple of 5).
+
+
+### Section: LIDAR
+
+We are currently using the Scanse Sweep LIDAR.  We start by installing the Scanse Sweep drivers, and then the [sweep-ros package](https://github.com/scanse/sweep-ros).
+
+In order to access the serial device without being root, we added ourselves to the `dialout` group:
+
+```bash
+# Should show you are not part of 'dialout' group
+groups ${USER}
+
+# Add yourself to 'dialout' group
+sudo gpasswd --add ${USER} dialout
+
+# Verify you are now a memeber of the group
+groups ${USER}
+```
+
+Another option (if the above doesn't work) is simply to give all users read/write permissions to the device, but this will have to be re-applied after every reboot.
+```bash
+sudo chmod 666 /dev/ttys0
+```
+
+Next, we will need the ros package `pointcloud_to_laserscan`:
+```bash
+sudo apt-get install ros-kinetic-pointcloud-to-laserscan
+```
